@@ -11,6 +11,10 @@ Parameters:
   GitHubOAuthToken:
     Type: String
     NoEcho: true
+  LambdaCodeKey:
+    Type: String
+  LambdaBucketName:
+    Type: String
 
 Resources:
 
@@ -41,16 +45,12 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: HelloWorldFunction
-      Handler: app.lambda_handler
+      Handler: lambda/app.lambda_handler
       Runtime: python3.11
       Role: !GetAtt HelloFunctionRole.Arn
       Code:
-        S3Bucket: !Ref LambdaBucket
-        S3Key: function.zip
-
-  LambdaBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
+        S3Bucket: !Ref LambdaBucketName
+        S3Key: !Ref LambdaCodeKey
 
   ApiGateway:
     Type: AWS::ApiGateway::RestApi
@@ -153,7 +153,7 @@ Resources:
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
-        Location: !Ref LambdaBucket
+        Location: !Ref LambdaBucketName
       Stages:
         - Name: Source
           Actions:
@@ -200,6 +200,13 @@ Resources:
                 StackName: HelloLambdaAppStack
                 Capabilities: CAPABILITY_IAM
                 TemplatePath: BuildOutput::template.yaml
+                ParameterOverrides: !Sub |
+                  GitHubRepo=${GitHubRepo}
+                  GitHubOwner=${GitHubOwner}
+                  GitHubBranch=${GitHubBranch}
+                  GitHubOAuthToken=${GitHubOAuthToken}
+                  LambdaBucketName=${LambdaBucketName}
+                  LambdaCodeKey=function.zip
 
 Outputs:
   ApiUrl:

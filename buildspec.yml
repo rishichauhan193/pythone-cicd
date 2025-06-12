@@ -1,5 +1,9 @@
 version: 0.2
 
+env:
+  variables:
+    S3_KEY: function.zip
+
 phases:
   install:
     runtime-versions:
@@ -9,8 +13,9 @@ phases:
   build:
     commands:
       - echo "Zipping Lambda function..."
-      - zip -r function.zip lambda/
-      - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
+      - zip -r $S3_KEY lambda/
+      - aws s3 cp $S3_KEY s3://$S3_BUCKET_NAME/$S3_KEY
+
 artifacts:
   files:
     - template.yaml
