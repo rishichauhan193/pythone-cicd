@@ -5,11 +5,13 @@ phases:
     runtime-versions:
       python: 3.11
     commands:
-      - echo Installing dependencies...
+      - pip install --upgrade pip
   build:
     commands:
-      - echo Zipping lambda function...
+      - echo "Zipping Lambda function..."
       - zip -r function.zip lambda/
+      - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
 artifacts:
   files:
+    - template.yaml
     - function.zip
