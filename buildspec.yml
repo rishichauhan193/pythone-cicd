@@ -18,7 +18,6 @@ phases:
     commands:
       - echo "Zipping Lambda function..."
       - zip function.zip app.py
-      - echo "Uploading to S3 bucket: $S3_BUCKET_NAME"
       - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip --region ap-south-1
 
 artifacts:
