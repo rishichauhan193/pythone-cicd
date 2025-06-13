@@ -1,5 +1,9 @@
 version: 0.2
 
+env:
+  exported-variables:
+    - S3_BUCKET_NAME
+
 phases:
   install:
     runtime-versions:
@@ -7,20 +11,15 @@ phases:
     commands:
       - pip install --upgrade pip
       - echo "Fetching bucket name from SSM Parameter Store..."
-      - |
-        export S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
-        echo "S3_BUCKET_NAME=$S3_BUCKET_NAME"
-        echo "export S3_BUCKET_NAME=$S3_BUCKET_NAME" >> /tmp/env.sh
+      - export S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
+      - echo "S3_BUCKET_NAME=$S3_BUCKET_NAME"
 
   build:
     commands:
-      - |
-        echo "Loading env variables..."
-        source /tmp/env.sh
-        echo "Zipping Lambda function..."
-        zip -r function.zip lambda/
-        echo "Uploading to S3 bucket: $S3_BUCKET_NAME"
-        aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
+      - echo "Zipping Lambda function..."
+      - zip -r function.zip lambda/
+      - echo "Uploading to S3 bucket: $S3_BUCKET_NAME"
+      - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
 
 artifacts:
   files:
