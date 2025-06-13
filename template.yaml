@@ -423,6 +423,7 @@ Resources:
                   }
               RoleArn: !GetAtt CloudFormationDeployActionRole.Arn
 
+
 Outputs:
   ApiUrl:
     Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
