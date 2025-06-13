@@ -14,14 +14,14 @@ phases:
 
   build:
     commands:
-      - echo "Loading env variables..."
-      - source /tmp/env.sh
-      - echo "Zipping Lambda function..."
-      - zip -r function.zip lambda/
-      - echo "Uploading to S3 bucket: $S3_BUCKET_NAME"
-      - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
+      - |
+        echo "Loading env variables..."
+        source /tmp/env.sh
+        echo "Zipping Lambda function..."
+        zip -r function.zip lambda/
+        echo "Uploading to S3 bucket: $S3_BUCKET_NAME"
+        aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
 
 artifacts:
   files:
     - template.yaml
-
