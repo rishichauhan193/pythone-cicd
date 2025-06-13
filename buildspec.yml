@@ -11,7 +11,7 @@ phases:
     commands:
       - pip install --upgrade pip
       - echo "Fetching bucket name from SSM Parameter Store..."
-      - export S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
+      - "export S3_BUCKET_NAME=$(aws ssm get-parameter --name \"/lambda/artifact/bucket\" --query \"Parameter.Value\" --output text)"
       - echo "S3_BUCKET_NAME=$S3_BUCKET_NAME"
 
   build:
@@ -24,4 +24,3 @@ phases:
 artifacts:
   files:
     - template.yaml
-
