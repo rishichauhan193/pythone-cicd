@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install --upgrade pip
+      - S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
+
+  build:
+    commands:
+      - echo "Zipping Lambda function..."
+      - zip -r function.zip lambda/
+      - echo "Uploading to S3..."
+      - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
+
+artifacts:
+  files:
+    - template.yaml
