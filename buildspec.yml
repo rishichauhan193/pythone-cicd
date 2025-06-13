@@ -10,17 +10,17 @@ phases:
       python: 3.11
     commands:
       - pip install --upgrade pip
-      - echo "Getting bucket name from SSM..."
+      - echo "Fetching bucket name from SSM Parameter Store..."
       - export S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
+      - echo "S3_BUCKET_NAME=$S3_BUCKET_NAME"
 
   build:
     commands:
-      - echo "S3_BUCKET_NAME=$S3_BUCKET_NAME"
       - echo "Zipping Lambda function..."
       - zip -r function.zip lambda/
-      - echo "Uploading to S3..."
+      - echo "Uploading to S3 bucket: $S3_BUCKET_NAME"
       - aws s3 cp function.zip s3://$S3_BUCKET_NAME/function.zip
 
 artifacts:
   files:
-    - template.yaml  # adjust path if needed
+    - template.yaml
