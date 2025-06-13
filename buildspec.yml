@@ -6,10 +6,13 @@ phases:
       python: 3.11
     commands:
       - pip install --upgrade pip
-      - S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
+      - echo "Exporting bucket name from SSM..."
+      - export S3_BUCKET_NAME=$(aws ssm get-parameter --name "/lambda/artifact/bucket" --query "Parameter.Value" --output text)
+      - echo "export S3_BUCKET_NAME=$S3_BUCKET_NAME" >> /tmp/env.sh
 
   build:
     commands:
+      - source /tmp/env.sh
       - echo "Zipping Lambda function..."
       - zip -r function.zip lambda/
       - echo "Uploading to S3..."
@@ -17,4 +20,4 @@ phases:
 
 artifacts:
   files:
-    - template.yaml
+    - template.yaml  # adjust path if needed
