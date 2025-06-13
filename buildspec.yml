@@ -10,10 +10,12 @@ phases:
       python: 3.11
     commands:
       - pip install --upgrade pip
+
   build:
     commands:
       - echo "Zipping Lambda function..."
       - zip -r $S3_KEY lambda/
+      - echo "Uploading to S3..."
       - aws s3 cp $S3_KEY s3://$S3_BUCKET_NAME/$S3_KEY
 
 artifacts:

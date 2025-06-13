@@ -185,28 +185,6 @@ Resources:
                 - Name: BuildOutput
               Configuration:
                 ProjectName: !Ref CodeBuildProject
-        - Name: Deploy
-          Actions:
-            - Name: DeployLambda
-              ActionTypeId:
-                Category: Deploy
-                Owner: AWS
-                Provider: CloudFormation
-                Version: 1
-              InputArtifacts:
-                - Name: BuildOutput
-              Configuration:
-                ActionMode: REPLACE_ON_FAILURE
-                StackName: HelloLambdaAppStack
-                Capabilities: CAPABILITY_IAM
-                TemplatePath: BuildOutput::template.yaml
-                ParameterOverrides: !Sub |
-                  GitHubRepo=${GitHubRepo}
-                  GitHubOwner=${GitHubOwner}
-                  GitHubBranch=${GitHubBranch}
-                  GitHubOAuthToken=${GitHubOAuthToken}
-                  LambdaBucketName=${LambdaBucketName}
-                  LambdaCodeKey=function.zip
 
 Outputs:
   ApiUrl:
